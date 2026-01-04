@@ -15,7 +15,7 @@ services:
       PASSWORD: odoo
     volumes:
       - ./docker/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./data/filestore:/var/lib/odoo/.local/share/Odoo/filestore
+      - ./data/filestore/SGCTECHAI:/var/lib/odoo/.local/share/Odoo/filestore/SGCTECHAI
       - ./data/sessions:/var/lib/odoo/sessions
       - ./data/backups:/var/lib/odoo/backups
       - ./addons:/mnt/extra-addons
@@ -28,10 +28,13 @@ services:
     ]
     networks:
       - bridge
+      - odoo19_default
 
 networks:
   bridge:
     driver: bridge
+  odoo19_default:
+    external: true
 
 volumes:
   db-data:
