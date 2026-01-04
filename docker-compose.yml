@@ -15,12 +15,14 @@ services:
       PASSWORD: odoo
     volumes:
       - ./docker/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./data/filestore:/var/lib/odoo/filestore
+      - ./data/filestore:/var/lib/odoo/.local/share/Odoo/filestore
       - ./data/sessions:/var/lib/odoo/sessions
+      - ./data/backups:/var/lib/odoo/backups
       - ./addons:/mnt/extra-addons
+      - ./custom_addons:/mnt/custom-addons
     command: [
       "--config=/etc/odoo/odoo.conf",
-      "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/CybroAddons",
+      "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/CybroAddons,/mnt/custom-addons",
       "-d", "SGCTECHAI",
       "--logfile=/dev/stdout"
     ]
