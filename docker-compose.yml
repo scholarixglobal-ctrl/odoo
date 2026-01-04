@@ -1,38 +1,35 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:16
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo
-    volumes:
-      - db-data:/var/lib/postgresql/data
-
   odoo:
-    image: odoo:19.0
-    depends_on:
-      - db
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: odoo-custom:19.0
     restart: unless-stopped
     ports:
       - "8069:8069"
     environment:
-      HOST: db
+      HOST: host.docker.internal
       USER: odoo
       PASSWORD: odoo
     volumes:
       - ./docker/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./addons:/mnt/extra-addons/odoo:ro
-      - ./addons/CybroAddons:/mnt/extra-addons/cybro:ro
-      - ./odoomates_addons:/mnt/extra-addons/odoomates
       - ./data/filestore:/var/lib/odoo/filestore
       - ./data/sessions:/var/lib/odoo/sessions
+      - ./addons:/mnt/extra-addons
     command: [
       "--config=/etc/odoo/odoo.conf",
-      "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/odoo,/mnt/extra-addons/cybro,/mnt/extra-addons/odoomates"
+      "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/CybroAddons",
+      "-d", "SGCTECHAI",
+      "--logfile=/dev/stdout"
     ]
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    driver: bridge
 
 volumes:
   db-data:
