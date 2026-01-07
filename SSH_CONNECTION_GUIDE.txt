@@ -1,0 +1,220 @@
+================================================================================
+SSH SYNC PROCEDURE - STEP BY STEP
+================================================================================
+
+SERVER DETAILS:
+  Host: odoo.scholarixglobal.com
+  SSH Key Location: C:\Users\USER\.ssh\
+  SSH Port: 22 (default)
+
+================================================================================
+IMPORTANT: NETWORK CONNECTIVITY ISSUE
+================================================================================
+
+⚠️ CURRENT SITUATION:
+  Your machine cannot reach odoo.scholarixglobal.com via SSH at this moment.
+  
+  Possible Reasons:
+  1. Network/Firewall blocking SSH port 22
+  2. VPN not connected (if required)
+  3. Internet connection issue
+  4. Server firewall blocking your IP
+  5. SSH key permissions issue
+
+================================================================================
+SOLUTION 1: TEST NETWORK CONNECTION (DO THIS FIRST)
+================================================================================
+
+Before SSH, verify network connectivity:
+
+Option A - Using PowerShell (Admin):
+  1. Open PowerShell as Administrator
+  2. Run: Test-NetConnection -ComputerName odoo.scholarixglobal.com -Port 22
+  3. If it says "TcpTestSucceeded : True" → Network is OK
+  4. If it says "False" → Network/Firewall is blocking
+
+Option B - Using Command Prompt (Admin):
+  1. Open CMD as Administrator
+  2. Run: telnet odoo.scholarixglobal.com 22
+  3. If connected → Good
+  4. If fails → Network is blocking
+
+Option C - Using SSH with Verbose:
+  1. Open PowerShell or CMD
+  2. Run: ssh -vvv USER@odoo.scholarixglobal.com
+  3. Watch the output to see where it fails
+
+================================================================================
+SOLUTION 2: CHECK SSH KEY PERMISSIONS
+================================================================================
+
+SSH keys need correct permissions. Run these commands:
+
+PowerShell (Admin):
+  icacls C:\Users\USER\.ssh\id_rsa /inheritance:r /grant:r "%USERNAME%:F"
+  icacls C:\Users\USER\.ssh /inheritance:r /grant:r "%USERNAME%:F"
+
+Or manually:
+  1. Right-click C:\Users\USER\.ssh\id_rsa
+  2. Properties → Security
+  3. Make sure only YOUR user has permissions
+  4. Remove all other users/groups
+
+================================================================================
+SOLUTION 3: IF VPN IS REQUIRED
+================================================================================
+
+Some hosting providers require VPN for SSH:
+
+1. Check if you need VPN to access the server
+2. Connect to VPN FIRST
+3. Then try SSH
+
+Ask your hosting provider if VPN is required.
+
+================================================================================
+SOLUTION 4: TRY ALTERNATIVE SSH METHOD
+================================================================================
+
+If standard SSH doesn't work, try with explicit key:
+
+PowerShell:
+  ssh -i C:\Users\USER\.ssh\id_rsa -v USER@odoo.scholarixglobal.com
+
+Or with different key names:
+  ssh -i C:\Users\USER\.ssh\id_rsa.pem USER@odoo.scholarixglobal.com
+  ssh -i C:\Users\USER\.ssh\key USER@odoo.scholarixglobal.com
+  ssh -i C:\Users\USER\.ssh\odoo USER@odoo.scholarixglobal.com
+
+================================================================================
+SOLUTION 5: IF YOU CAN'T GET SSH WORKING
+================================================================================
+
+Alternative methods to sync database:
+
+A. Use cPanel/Hosting Control Panel:
+   - Log into hosting dashboard
+   - Look for PHPMyAdmin or DB Manager
+   - Export/import database directly
+   
+B. Ask Hosting Provider to:
+   - Restore the backup for you
+   - Enable database manager temporarily
+   - Provide SSH access
+   
+C. Manual Export/Import (within Odoo UI):
+   - Export CRM data as CSV from local
+   - Import to remote website
+
+D. Contact Support:
+   - Provide backup file to hosting provider
+   - Ask them to restore it
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✅ DO THIS FIRST:
+   Run in PowerShell (Admin):
+   Test-NetConnection -ComputerName odoo.scholarixglobal.com -Port 22
+
+2. If that works:
+   Try SSH: ssh USER@odoo.scholarixglobal.com
+
+3. If it asks for password:
+   Enter password (or it should use your SSH key)
+
+4. If you get in successfully:
+   You'll see a command prompt like: $ or root@server:~#
+
+5. Once logged in:
+   Tell me, and I'll guide you through the restore commands
+
+================================================================================
+SSH CONNECTION CHECKLIST
+================================================================================
+
+Before you try to connect, verify:
+
+[ ] I know my SSH username (check with provider)
+[ ] I have SSH key at C:\Users\USER\.ssh\
+[ ] SSH key file name (id_rsa? id_ed25519? something else?)
+[ ] Server address (odoo.scholarixglobal.com)
+[ ] Network connectivity working
+[ ] Firewall allows port 22 out
+[ ] VPN connected (if required)
+[ ] SSH key has correct permissions
+
+================================================================================
+QUICK REFERENCE - SSH COMMANDS
+================================================================================
+
+Basic SSH login:
+  ssh USER@odoo.scholarixglobal.com
+
+With specific key:
+  ssh -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+
+With port:
+  ssh -p 2222 USER@odoo.scholarixglobal.com
+
+Verbose (for troubleshooting):
+  ssh -vvv USER@odoo.scholarixglobal.com
+
+Test connectivity:
+  Test-NetConnection -ComputerName odoo.scholarixglobal.com -Port 22
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. Your SSH key is at: C:\Users\USER\.ssh\
+   (Make sure this directory exists and has your keys)
+
+2. Common SSH key names:
+   - id_rsa (private key)
+   - id_rsa.pub (public key)
+   - id_ed25519 (newer algorithm)
+
+3. SSH key must be:
+   - Private key (not .pub)
+   - Have proper permissions (only your user can read)
+   - In OpenSSH format
+
+4. If SSH fails:
+   - Check with your hosting provider for correct details
+   - They may provide different instructions
+   - They may need to whitelist your IP
+
+================================================================================
+ONCE CONNECTED VIA SSH
+================================================================================
+
+Once you get the SSH prompt, I'll guide you through:
+
+1. Checking remote database status
+2. Creating safety backup
+3. Uploading your dump file
+4. Restoring the database
+5. Verifying 8,912 leads appear
+6. Testing the website
+
+Estimated time: 15-30 minutes total
+
+================================================================================
+DO THIS NOW
+================================================================================
+
+1. Open PowerShell as Administrator
+2. Run: Test-NetConnection -ComputerName odoo.scholarixglobal.com -Port 22
+3. Tell me the result:
+   - "TcpTestSucceeded : True" OR
+   - "TcpTestSucceeded : False" OR
+   - Any error message
+
+Then we'll know if it's a network issue or SSH configuration issue.
+
+================================================================================
+Document Created: January 6, 2026
+Status: AWAITING NETWORK CONNECTIVITY TEST
+================================================================================

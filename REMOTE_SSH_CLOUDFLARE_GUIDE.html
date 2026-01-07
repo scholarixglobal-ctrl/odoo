@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Remote SSH via Cloudflare Tunnel - How To</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.5; color: #1f2933; }
+    h1, h2, h3 { color: #0f172a; margin-bottom: 4px; }
+    code { background: #f3f4f6; padding: 2px 4px; border-radius: 4px; font-size: 0.95em; }
+    pre { background: #f8fafc; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    .step { margin-bottom: 16px; }
+    .note { background: #fff8e1; padding: 8px 12px; border-left: 4px solid #f59e0b; border-radius: 4px; }
+    .warning { background: #fef2f2; padding: 10px 12px; border-left: 4px solid #dc2626; border-radius: 4px; }
+    ul { margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Remote SSH Access via Cloudflare Tunnel</h1>
+  <p>Date: January 7, 2026</p>
+  <p>Purpose: Connect to <strong>odoo.scholarixglobal.com</strong> through Cloudflare Tunnel, then run maintenance tasks safely.</p>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>SSH key on your machine (e.g., <code>C:\Users\USER\.ssh\id_rsa</code>).</li>
+    <li>Cloudflare Tunnel set up with a public hostname pointing to SSH (e.g., <code>ssh.odoo.scholarixglobal.com</code> → <code>ssh://localhost:22</code> on the origin).</li>
+    <li><code>cloudflared.exe</code> available at <code>C:\odoo19\tools\cloudflared.exe</code>.</li>
+  </ul>
+
+  <h2>One-Time Setup (if needed)</h2>
+  <div class="step">
+    <h3>1) Log in to Cloudflare</h3>
+    <pre>"C:\odoo19\tools\cloudflared.exe" tunnel login</pre>
+    <p>Follow the browser prompt; it will place <code>cert.pem</code> in <code>C:\Users\USER\.cloudflared\</code>.</p>
+  <h1>Remote SSH Access via Cloudflare Tunnel</h1>
+  <p>Date: January 7, 2026</p>
+  <p>Purpose: One source of truth to connect to <strong>odoo.scholarixglobal.com</strong>, run maintenance safely, and restore the SGCTECHAI database (8,912 CRM leads).</p>
+
+  <h2>TL;DR (Happy Path)</h2>
+  <ol>
+    <li>In Cloudflare Zero Trust → Access → Tunnels → select the active tunnel → Public Hostname: Subdomain <code>ssh</code>, Domain <code>odoo.scholarixglobal.com</code>, Service <code>ssh://localhost:22</code>. Save.</li>
+    <li>Terminal A (keep open):<br><pre>"C:\odoo19\tools\cloudflared.exe" access tcp --hostname ssh.odoo.scholarixglobal.com --listener 127.0.0.1:2222</pre></li>
+    <li>Terminal B:<br><pre>ssh -i C:\Users\USER\.ssh\id_rsa -p 2222 odoo@127.0.0.1</pre></li>
+    <li>Maintenance: backup → stop Odoo → restore/run tasks → start Odoo → verify (see below).</li>
+  </ol>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>SSH key on your machine (e.g., <code>C:\Users\USER\.ssh\id_rsa</code> or <code>id_ed25519</code>).</li>
+    <li><code>cloudflared.exe</code> at <code>C:\odoo19\tools\cloudflared.exe</code>.</li>
+    <li>Cloudflare Tunnel with a Public Hostname mapped to SSH (<code>ssh.odoo.scholarixglobal.com</code> → <code>ssh://localhost:22</code>).</li>
+    <li>Remote SSH user (e.g., <code>odoo</code>); your public key must be on the server.</li>
+  </ul>
+
+  <h2>Install / Login Cloudflared (one time)</h2>
+  <div class="step">
+    <h3>1) Download (portable already placed)</h3>
+    <p>Binary is stored at <code>C:\odoo19\tools\cloudflared.exe</code>. If missing, download latest from Cloudflare releases.</p>
+  </div>
+  <div class="step">
+    <h3>2) Login</h3>
+    <pre>"C:\odoo19\tools\cloudflared.exe" tunnel login</pre>
+    <p>Finish browser auth; cert is written to <code>C:\Users\USER\.cloudflared\cert.pem</code>. If a stale cert exists, back it up then re-run login.</p>
+  </div>
+  <div class="step">
+    <h3>3) Verify tunnels</h3>
+    <pre>"C:\odoo19\tools\cloudflared.exe" tunnel list</pre>
+    <p>Example active tunnel: <code>odoo-tunnel1</code> (ID <code>e2b9e7e7-eff3-408c-8bba-af3a43aa85bf</code>).</p>
+  </div>
+
+  <h2>Cloudflare Dashboard Setup</h2>
+  <ol>
+    <li>Zero Trust → Access → Tunnels → select the active tunnel (odoo-tunnel1).</li>
+    <li>Public Hostnames → Add:
+      <ul>
+        <li>Subdomain: <code>ssh</code></li>
+        <li>Domain: <code>odoo.scholarixglobal.com</code></li>
+        <li>Service: <code>ssh://localhost:22</code></li>
+      </ul>
+    </li>
+    <li>Save and wait ~1 minute. Remove any old hostnames that pointed the root domain to SSH to avoid conflicts.</li>
+  </ol>
+
+  <h2>Connect via Cloudflare Access TCP</h2>
+  <div class="step">
+    <h3>1) Start listener (keep open)</h3>
+    <pre>"C:\odoo19\tools\cloudflared.exe" access tcp --hostname ssh.odoo.scholarixglobal.com --listener 127.0.0.1:2222</pre>
+  </div>
+  <div class="step">
+    <h3>2) SSH through listener</h3>
+    <pre>ssh -i C:\Users\USER\.ssh\id_rsa -p 2222 odoo@127.0.0.1</pre>
+    <p>Use <code>id_ed25519</code> if that is your key; adjust username if needed. Ensure the path uses backslashes (or <code>/c/Users/USER/.ssh/id_rsa</code> in Git Bash) to avoid the <code>C:UsersUSER.sshid_rsa</code> path error.</p>
+  </div>
+  <div class="warning">If you get connection refused: confirm the Public Hostname maps to <code>ssh://localhost:22</code> and the listener is still running.</div>
+
+  <h2>File Transfer</h2>
+  <ul>
+    <li><strong>SCP (run outside SSH):</strong>
+      <pre>scp -i C:\Users\USER\.ssh\id_rsa C:\odoo19\backups\sync_to_remote_20260106_145050.dump odoo@ssh.odoo.scholarixglobal.com:~/</pre>
+      <p>If using the Access TCP listener, add <code>-P 2222</code> and host <code>127.0.0.1</code> instead.</p>
+    </li>
+    <li><strong>WinSCP (GUI):</strong> Protocol SFTP, Host <code>ssh.odoo.scholarixglobal.com</code>, User <code>odoo</code>, Key <code>C:\Users\USER\.ssh\id_rsa</code>.</li>
+  </ul>
+
+  <h2>Maintenance Workflow (once connected)</h2>
+  <div class="step">
+    <h3>1) Safety backup</h3>
+    <pre>sudo -u postgres pg_dump -d SGCTECHAI -F c -f ~/sgctechai_backup_$(date +%Y%m%d_%H%M%S).dump</pre>
+  </div>
+  <div class="step">
+    <h3>2) Stop Odoo</h3>
+    <pre>sudo systemctl stop odoo</pre>
+  </div>
+  <div class="step">
+    <h3>3) Restore / maintenance</h3>
+    <ul>
+      <li>Restore example:<br><pre>sudo -u postgres pg_restore -d SGCTECHAI -c -v ~/sync_to_remote_20260106_145050.dump</pre></li>
+      <li>Other tasks: apply updates, clean logs, etc., while Odoo is stopped.</li>
+    </ul>
+  </div>
+  <div class="step">
+    <h3>4) Start Odoo</h3>
+    <pre>sudo systemctl start odoo</pre>
+  </div>
+  <div class="step">
+    <h3>5) Verify</h3>
+    <ul>
+      <li>Counts:<br><pre>sudo -u postgres psql -d SGCTECHAI -c "SELECT COUNT(*) FROM crm_lead; SELECT COUNT(*) FROM crm_tag;"</pre></li>
+      <li>Expect ~8,912 leads, 13 tags after restore.</li>
+      <li>Logs:<br><pre>sudo tail -50 /var/log/odoo/odoo-server.log</pre></li>
+    </ul>
+  </div>
+
+  <h2>Troubleshooting</h2>
+  <ul>
+    <li><strong>Permission denied (publickey):</strong> use the correct key path; ensure your public key is on the server.</li>
+    <li><strong>Connection refused on 127.0.0.1:2222:</strong> listener stopped or hostname not mapped to SSH in Cloudflare.</li>
+    <li><strong>Missing/invalid cert:</strong> rerun <code>cloudflared tunnel login</code> (backs up old <code>cert.pem</code> first if needed).</li>
+    <li><strong>Path error (C:UsersUSER...):</strong> wrap the path in quotes and keep backslashes, or use <code>/c/Users/USER/.ssh/id_rsa</code> in Git Bash.</li>
+    <li><strong>Outdated cloudflared warning:</strong> upgrade when convenient; current portable version 2024.12.0 works.</li>
+  </ul>
+
+  <h2>Quick Commands Reference</h2>
+  <pre>

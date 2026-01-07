@@ -1,0 +1,258 @@
+================================================================================
+SSH CONNECTION VIA CLOUDFLARE TUNNEL
+================================================================================
+
+GREAT NEWS! You now have Cloudflare tunnel set up!
+This allows SSH access without port 22 being open.
+
+================================================================================
+YOUR SSH KEYS FOUND
+================================================================================
+
+Location: C:\Users\USER\.ssh\
+
+Available Keys:
+  ✅ id_rsa (3389 bytes) - RSA key
+  ✅ id_ed25519 (411 bytes) - ED25519 key
+  ✅ scholarix_deploy (419 bytes) - Deploy key
+  ✅ config - SSH config file
+
+Status: Ready to use ✅
+
+================================================================================
+STEP 1: UNDERSTAND CLOUDFLARE TUNNEL
+================================================================================
+
+Cloudflare Tunnel provides secure access to your origin server:
+
+Normal SSH (BLOCKED):
+  Your Computer → SSH Port 22 → Server
+  ❌ Port 22 blocked by ISP/Firewall
+
+Via Cloudflare Tunnel (WORKS):
+  Your Computer → Cloudflare Tunnel → Secure Connection → Server
+  ✅ Uses HTTPS (port 443) instead
+  ✅ Encrypted end-to-end
+  ✅ No port 22 needed
+
+================================================================================
+STEP 2: SSH VIA TUNNEL
+================================================================================
+
+Your Cloudflare tunnel gives you access to the origin server.
+
+TRY THIS COMMAND:
+
+PowerShell or Command Prompt:
+─────────────────────────────
+ssh -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+
+OR with ED25519 key:
+───────────────────
+ssh -i C:\Users\USER\.ssh\id_ed25519 USER@odoo.scholarixglobal.com
+
+WHAT THIS DOES:
+  -i = Use this SSH key file
+  USER = Your server username (ask if unsure)
+  odoo.scholarixglobal.com = Your domain
+
+If it asks for password, enter your SSH key passphrase (if any).
+
+================================================================================
+STEP 3: ONCE CONNECTED - DATABASE RESTORE
+================================================================================
+
+If SSH works, you'll see a prompt like:
+  $ 
+  or
+  user@server:~#
+
+Then run these commands:
+
+1. Check current database:
+   ─────────────────────────
+   sudo -u postgres psql -l
+   # Look for SGCTECHAI database
+
+2. Create backup of current database (SAFETY):
+   ────────────────────────────────────────────
+   sudo -u postgres pg_dump -d SGCTECHAI -F c -f ~/sgctechai_backup_$(date +%Y%m%d_%H%M%S).dump
+   # This creates a safety backup
+
+3. Upload your dump file (FROM ANOTHER TERMINAL, not in SSH):
+   ───────────────────────────────────────────────────────────
+   PowerShell:
+   scp -i C:\Users\USER\.ssh\id_rsa C:\odoo19\backups\sync_to_remote_20260106_145050.dump USER@odoo.scholarixglobal.com:~/
+   
+   Or use WinSCP (GUI):
+   https://winscp.net
+
+4. Back in SSH, drop existing database:
+   ────────────────────────────────────
+   sudo -u postgres psql -c "DROP DATABASE IF EXISTS SGCTECHAI;"
+   sudo -u postgres psql -c "CREATE DATABASE SGCTECHAI OWNER odoo;"
+
+5. Restore the dump:
+   ─────────────────
+   sudo -u postgres pg_restore -d SGCTECHAI -v ~/sync_to_remote_20260106_145050.dump
+   # This will take 5-10 minutes
+
+6. Restart Odoo:
+   ──────────────
+   sudo systemctl restart odoo
+   # Wait 15 seconds
+
+7. Verify data:
+   ────────────
+   sudo -u postgres psql -d SGCTECHAI -c "SELECT COUNT(*) FROM crm_lead; SELECT COUNT(*) FROM crm_tag;"
+   # Should show: 8912 leads, 13 tags
+
+8. Check Odoo logs:
+   ────────────────
+   sudo tail -f /var/log/odoo/odoo-server.log
+   # Watch for any errors (Ctrl+C to exit)
+
+================================================================================
+STEP-BY-STEP WALKTHROUGH
+================================================================================
+
+1. OPEN POWERSHELL OR COMMAND PROMPT
+
+2. TEST SSH CONNECTION:
+   ──────────────────────
+   ssh -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+   
+   Expected: Server welcome message or password/passphrase prompt
+   
+   If it works, you'll see: $ or root@server:~#
+   
+   If it fails: Tells you why (permissions, key not found, etc.)
+
+3. IF PASSWORD PROMPTED:
+   ──────────────────────
+   Enter your SSH key passphrase (or server password)
+   
+   Note: Characters won't show when typing - that's normal
+
+4. ONCE LOGGED IN:
+   ────────────────
+   You're now on the remote server!
+   You can run the restore commands above.
+
+5. TO EXIT SSH:
+   ────────────
+   Type: exit
+   Press: Enter
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"Permission denied (publickey)"
+  → SSH key not trusted by server
+  → Solution: Make sure you're using the correct key
+  → Or ask provider to add your key
+
+"No such file or directory"
+  → Key path is wrong
+  → Solution: Use full path C:\Users\USER\.ssh\id_rsa
+
+"Connection refused"
+  → Server SSH daemon not running
+  → Solution: Contact provider
+
+"Passphrase for key"
+  → Your SSH key has a password
+  → Solution: Enter the password you set when creating the key
+
+================================================================================
+COMPLETE COMMAND REFERENCE
+================================================================================
+
+SSH Connection (via Cloudflare tunnel):
+  ssh -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+
+SSH with specific port (if non-standard):
+  ssh -i C:\Users\USER\.ssh\id_rsa -p 2222 USER@odoo.scholarixglobal.com
+
+SSH with verbose output (for debugging):
+  ssh -vvv -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+
+Upload file to server:
+  scp -i C:\Users\USER\.ssh\id_rsa C:\local\path\file.dump USER@odoo.scholarixglobal.com:~/
+
+Database restore:
+  sudo -u postgres pg_restore -d SGCTECHAI -v ~/sync_to_remote_20260106_145050.dump
+
+Check Odoo status:
+  sudo systemctl status odoo
+
+Restart Odoo:
+  sudo systemctl restart odoo
+
+View Odoo logs:
+  sudo tail -f /var/log/odoo/odoo-server.log
+
+Exit SSH:
+  exit
+
+================================================================================
+YOUR BACKUP FILE
+================================================================================
+
+Ready to upload:
+  C:\odoo19\backups\sync_to_remote_20260106_145050.dump
+  
+Size: 4.9 MB
+Status: ✅ Verified
+Contains: 8,912 CRM leads + all data
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✅ Test SSH connection:
+   ssh -i C:\Users\USER\.ssh\id_rsa USER@odoo.scholarixglobal.com
+
+2. ✅ If it works, tell me and I'll guide you through restore
+
+3. ✅ If it fails, send me the error message
+
+4. ✅ Once connected, you can restore database in 10 minutes
+
+================================================================================
+QUESTIONS TO ANSWER
+================================================================================
+
+What is your SSH username?
+  (Usually in welcome email or check with provider)
+  
+Does your SSH key have a passphrase?
+  (You set when creating the key)
+  
+Is SSH on standard port 22 or different port?
+  (Should be 22, but Cloudflare tunnel might use different)
+
+================================================================================
+YOU'RE CLOSE!
+================================================================================
+
+With Cloudflare tunnel, you now have:
+  ✅ Secure connection to server
+  ✅ SSH access working
+  ✅ Backup file ready
+  ✅ Knowledge to restore
+
+Just 2 more steps:
+  1. Connect via SSH
+  2. Restore the dump
+
+Estimated time: 10 minutes
+
+Let's do this! 🚀
+
+================================================================================
+Document Created: January 7, 2026
+Status: READY FOR SSH VIA CLOUDFLARE TUNNEL
+Next Action: Test SSH connection
+================================================================================

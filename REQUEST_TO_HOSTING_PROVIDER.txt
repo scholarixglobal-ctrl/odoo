@@ -1,0 +1,90 @@
+================================================================================
+REQUEST TO HOSTING PROVIDER - Odoo Database Sync
+================================================================================
+
+Dear Support Team,
+
+I need to sync my local Odoo database (8,912 CRM leads) to the production 
+server at odoo.scholarixglobal.com. Please help with ONE of these options:
+
+================================================================================
+OPTION 1: Direct Database Restore (EASIEST)
+================================================================================
+
+I will provide you with a PostgreSQL dump file (4.9 MB). Please:
+
+1. Backup current SGCTECHAI database:
+   sudo -u postgres pg_dump -d SGCTECHAI -F c -f ~/sgctechai_backup_$(date +%Y%m%d_%H%M%S).dump
+
+2. Stop Odoo service:
+   sudo systemctl stop odoo
+
+3. Restore my dump file:
+   sudo -u postgres pg_restore -d SGCTECHAI -c -v /path/to/sync_to_remote_20260106_145050.dump
+
+4. Start Odoo service:
+   sudo systemctl start odoo
+
+5. Verify:
+   sudo -u postgres psql -d SGCTECHAI -c "SELECT COUNT(*) FROM crm_lead;"
+   (Expected: 8912)
+
+I can send the dump file via your preferred method (FTP, ticket upload, etc.).
+
+================================================================================
+OPTION 2: Enable Database Manager
+================================================================================
+
+Please enable the Odoo Database Manager at:
+https://odoo.scholarixglobal.com/web/database/manager
+
+I have the master password and a ZIP backup ready to upload.
+
+================================================================================
+OPTION 3: Enable SSH Access via Cloudflare Tunnel
+================================================================================
+
+Please run this Docker command on the server to enable SSH via Cloudflare:
+
+docker run -d \
+  --name cloudflared-tunnel \
+  --restart unless-stopped \
+  cloudflare/cloudflared:latest \
+  tunnel --no-autoupdate run \
+  --token eyJhIjoiNWNhODc0NzhlMDlkNmViYzY5NTRmNzcwYWM0NjU2ZTgiLCJ0IjoiZTJiOWU3ZTctZWZmMy00MDhjLThiYmEtYWYzYTQzYWE4NWJmIiwicyI6IllqbGxOV1l4WldZdE5EQTRZUzAwWlRRMExXSTJabU10TVRrME56Rm1ZVEUwWldSaCJ9
+
+This will allow me to SSH into the server and restore the database myself.
+
+Alternative: Add this public hostname in Cloudflare Zero Trust dashboard:
+- Subdomain: ssh
+- Domain: odoo.scholarixglobal.com  
+- Service Type: SSH
+- URL: localhost:22
+
+================================================================================
+OPTION 4: Grant Me Temporary SSH Access
+================================================================================
+
+Please add my SSH public key to the server so I can connect and restore:
+
+Public Key Location: C:\Users\USER\.ssh\id_rsa.pub
+
+Or provide temporary SSH credentials/access.
+
+================================================================================
+PREFERRED OPTION
+================================================================================
+
+OPTION 1 (Direct Restore) is fastest - I can send the file immediately.
+
+Current Situation:
+- Local database: 8,912 CRM leads ready to sync
+- Remote database: Empty or outdated
+- Backup file: 4.9 MB PostgreSQL dump
+- Ready to send: Yes
+
+Please let me know which option works best for you.
+
+Thank you!
+
+================================================================================

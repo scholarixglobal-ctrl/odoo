@@ -1,0 +1,149 @@
+================================================================================
+SGCTECHAI DATABASE - REMOTE CONNECTION INFORMATION
+Generated: January 6, 2026
+================================================================================
+
+PRIMARY DATABASE CONNECTION
+----------------------------
+Database Name:       SGCTECHAI
+Host/IP Address:     172.31.240.1 (Local Machine)
+Port:                5433
+Username:            odoo
+Password:            odoo
+PostgreSQL Version:  16.11
+
+MACHINE DETAILS
+---------------
+Machine Hostname:    DESKTOP-0862M4T
+Machine IP:          172.31.240.1
+Docker Container:    odoo19-db-1
+Docker Network:      odoo19_default
+Container IP:        172.20.0.2 (internal network)
+
+CONNECTION STRINGS
+------------------
+
+Command Line (psql):
+    psql -h 172.31.240.1 -p 5433 -U odoo -d SGCTECHAI
+    Password: odoo
+
+DBeaver/DataGrip/pgAdmin:
+    Host:     172.31.240.1
+    Port:     5433
+    Database: SGCTECHAI
+    User:     odoo
+    Password: odoo
+
+Python (psycopg2):
+    import psycopg2
+    conn = psycopg2.connect(
+        host="172.31.240.1",
+        port=5433,
+        database="SGCTECHAI",
+        user="odoo",
+        password="odoo"
+    )
+
+Node.js (pg):
+    const { Client } = require('pg');
+    const client = new Client({
+        host: '172.31.240.1',
+        port: 5433,
+        database: 'SGCTECHAI',
+        user: 'odoo',
+        password: 'odoo'
+    });
+    client.connect();
+
+PostgreSQL Connection URL:
+    postgresql://odoo:odoo@172.31.240.1:5433/SGCTECHAI
+
+DATABASE CONTENT SUMMARY
+------------------------
+CRM Leads:           8,912 records (all active, unassigned)
+CRM Tags:            13 custom tags
+CRM Stages:          7 stages (New, No answer/Unable to reach, Contacted, Won, 
+                     On-going discussion, Secured Conference, Not visionary)
+CRM Teams:           3 teams
+Mail Messages:       686 communications
+Users:               8 active users
+Partners:            10 partner records
+Countries:           251
+Country States:      1,977
+
+CRM LEAD DISTRIBUTION BY STAGE
+-------------------------------
+Stage 1 (New):                      8,870 leads
+Stage 2 (No answer/Unable to reach):   12 leads
+Stage 3 (Contacted):                    13 leads
+Stage 5 (On-going discussion):          11 leads
+Stage 6 (Secured Conference):            4 leads
+Stage 7 (Not visionary):                 2 leads
+
+IMPORTANT NOTES
+---------------
+⚠️ Database is hosted locally on DESKTOP-0862M4T
+⚠️ Default credentials (odoo/odoo) - CHANGE FOR PRODUCTION
+⚠️ Port 5433 must be accessible through firewall for remote connections
+⚠️ All 8,912 CRM leads have NO assigned owner (user_id = NULL)
+⚠️ To view leads in CRM, remove "My Pipeline" filter or select "Unassigned"
+
+NETWORK ARCHITECTURE
+--------------------
+This database is running in Docker container on your local Windows machine:
+- Container: odoo19-db-1 (PostgreSQL 16)
+- Exposed Port: 5433 (mapped from container port 5432)
+- Accessible from: localhost, 172.31.240.1, or machine hostname
+
+For access from another machine on the same network:
+- Use machine IP: 172.31.240.1
+- Ensure Windows Firewall allows inbound connections on port 5433
+- Verify Docker port mapping is correct
+
+For access from the internet (e.g., odoo.scholarixglobal.com):
+- This database is NOT directly accessible from the internet
+- A separate remote database likely exists for odoo.scholarixglobal.com
+- Data synchronization required between local and remote databases
+
+SECURITY RECOMMENDATIONS
+------------------------
+1. Change default password from 'odoo' to strong password
+2. Create separate database users with limited permissions
+3. Enable SSL/TLS for encrypted connections
+4. Restrict access by IP address using pg_hba.conf
+5. Use firewall rules to limit port 5433 access
+6. Enable PostgreSQL logging for audit trail
+
+BACKUP LOCATIONS
+----------------
+Primary Backups:     C:/odoo19/backups/
+Latest Stable Dump:  SGCTECHAI_stable.dump (8.0 MB)
+Backup Frequency:    Manual (needs automation)
+Retention Policy:    None (needs implementation)
+
+RELATED SERVICES
+----------------
+Odoo Web Interface:  http://localhost:8069
+Odoo Container:      odoo19-odoo-1
+Database Container:  odoo19-db-1
+Production Website:  https://odoo.scholarixglobal.com (separate instance)
+
+TROUBLESHOOTING
+---------------
+If connection fails:
+1. Verify Docker containers are running: docker ps
+2. Check port is accessible: netstat -an | grep 5433
+3. Test local connection first before remote
+4. Verify credentials are correct
+5. Check PostgreSQL logs: docker logs odoo19-db-1
+
+For "My Pipeline" showing zero leads in Odoo:
+- All leads have user_id = NULL (unassigned)
+- Remove "My Pipeline" filter or select "Unassigned" filter
+- Assign leads to users to see them in personal pipeline
+
+================================================================================
+Document Version: 1.0
+Last Updated: January 6, 2026
+Maintained By: Dev Team
+================================================================================
