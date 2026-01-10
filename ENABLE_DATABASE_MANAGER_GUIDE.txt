@@ -1,0 +1,231 @@
+═══════════════════════════════════════════════════════════════════════════════
+HOW TO ENABLE ODOO DATABASE MANAGER
+Request for Hosting Provider
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 OVERVIEW
+-----------
+The database manager at https://odoo.scholarixglobal.com/web/database/manager
+is currently disabled. We need it enabled to restore our database backup.
+
+Master Password: 8586583@Bran
+
+
+🔧 OPTION 1: ENABLE VIA CONFIGURATION FILE (RECOMMENDED)
+---------------------------------------------------------
+
+Step 1: Locate the Odoo configuration file
+Usually at one of these locations:
+  • /etc/odoo/odoo.conf
+  • /etc/odoo-server.conf
+  • /opt/odoo/odoo.conf
+  • ~/.odoorc
+
+Step 2: Edit the configuration file
+Add or modify these settings:
+
+[options]
+admin_passwd = 8586583@Bran
+list_db = True
+
+Explanation:
+  • admin_passwd: Master password for database operations
+  • list_db = True: Shows database list and manager interface
+
+Step 3: Restart Odoo service
+sudo systemctl restart odoo
+# or
+sudo service odoo restart
+
+Step 4: Verify it works
+Open: https://odoo.scholarixglobal.com/web/database/manager
+Should show: Database management interface with restore option
+
+
+🔧 OPTION 2: ENABLE VIA COMMAND LINE
+-------------------------------------
+
+If Odoo runs from command line (less common in production):
+
+Stop Odoo, then restart with these parameters:
+--db-filter=^%d$ --list-db
+
+
+🔧 OPTION 3: ENABLE IF USING DOCKER
+------------------------------------
+
+If Odoo runs in Docker container:
+
+Step 1: Find the container
+docker ps | grep odoo
+
+Step 2: Edit environment variables or config volume
+docker exec -it <container-name> bash
+nano /etc/odoo/odoo.conf
+
+# Add these lines:
+admin_passwd = 8586583@Bran
+list_db = True
+
+Step 3: Restart container
+docker restart <container-name>
+
+
+🔧 OPTION 4: CHECK REVERSE PROXY (NGINX/APACHE)
+------------------------------------------------
+
+Sometimes database manager is blocked by web server, not Odoo.
+
+Check NGINX configuration:
+sudo nano /etc/nginx/sites-available/odoo.scholarixglobal.com
+
+Look for location block that blocks /web/database:
+location ~* /web/database {
+    deny all;  # <-- This blocks database manager
+}
+
+To enable, either:
+  • Remove the deny block entirely
+  • Or change to: allow all;
+
+Then reload NGINX:
+sudo nginx -t
+sudo systemctl reload nginx
+
+
+⚠️ SECURITY WARNING
+--------------------
+
+After enabling database manager, CRITICAL SECURITY STEPS:
+
+1. STRONG MASTER PASSWORD
+   Current: 8586583@Bran
+   Recommended: Change to stronger password after restore
+
+2. RESTRICT ACCESS BY IP
+   Only allow access from specific IPs:
+   
+   In odoo.conf:
+   admin_passwd = <strong-password>
+   list_db = True
+   db_name = SGCTECHAI
+   
+   In NGINX:
+   location /web/database {
+       allow 1.2.3.4;      # Your office IP
+       deny all;
+       proxy_pass http://odoo;
+   }
+
+3. DISABLE AFTER RESTORE (RECOMMENDED)
+   Once database is restored, disable again:
+   list_db = False
+   
+   This prevents unauthorized database access.
+
+
+📝 VERIFICATION CHECKLIST
+--------------------------
+
+After provider makes changes:
+
+□ Step 1: Open https://odoo.scholarixglobal.com/web/database/manager
+□ Step 2: Should NOT see "404 Not Found"
+□ Step 3: Should see "Master Password" input field
+□ Step 4: Enter master password: 8586583@Bran
+□ Step 5: Should see database management interface
+□ Step 6: "Restore Database" button should be visible
+
+
+🎯 WHAT TO SEND TO HOSTING PROVIDER
+------------------------------------
+
+Email template:
+
+Subject: Enable Odoo Database Manager - URGENT
+
+Hello Support Team,
+
+We need to restore a database backup but the database manager is currently 
+disabled on our Odoo instance at odoo.scholarixglobal.com.
+
+REQUEST:
+Please enable the database manager interface by adding these lines to our 
+Odoo configuration file (/etc/odoo/odoo.conf):
+
+    admin_passwd = 8586583@Bran
+    list_db = True
+
+Then restart the Odoo service.
+
+VERIFICATION:
+After the change, this URL should be accessible:
+https://odoo.scholarixglobal.com/web/database/manager
+
+SECURITY:
+Once we complete our database restore (approximately 20 minutes), please 
+disable the database manager again by setting:
+    list_db = False
+
+We will notify you when the restore is complete.
+
+Thank you for your assistance.
+
+Best regards,
+[Your Name]
+
+Attachment: This guide (ENABLE_DATABASE_MANAGER_GUIDE.txt)
+
+
+📊 ESTIMATED TIMELINE
+----------------------
+
+Provider enables database manager:     5 minutes
+You upload backup ZIP (2.5 MB):       2 minutes
+Odoo processes restore:              10 minutes
+You verify 8,912 leads visible:       2 minutes
+Provider disables manager again:      3 minutes
+───────────────────────────────────────────────
+TOTAL:                               22 minutes
+
+
+🔄 AFTER MANAGER IS ENABLED
+----------------------------
+
+1. Go to: https://odoo.scholarixglobal.com/web/database/manager
+
+2. Enter master password: 8586583@Bran
+
+3. Click "Restore Database"
+
+4. Upload file: C:\odoo19\backups\SGCTECHAI_web_restore.zip (2.5 MB)
+
+5. Database name: SGCTECHAI
+
+6. Master password: 8586583@Bran (confirm)
+
+7. Click "Continue"
+
+8. Wait 10 minutes for restore
+
+9. Login and verify 8,912 CRM leads visible
+
+
+📞 ALTERNATIVE IF PROVIDER CANNOT ENABLE
+-----------------------------------------
+
+If provider says they cannot enable database manager for security reasons,
+use Option 1 from REQUEST_TO_HOSTING_PROVIDER.txt instead:
+
+  → Provider does direct restore via command line
+  → No database manager needed
+  → More secure approach
+  → Same result (8,912 leads on remote)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Created: 2026-01-08
+Purpose: Enable database manager for web-based restore
+Backup ready: C:\odoo19\backups\SGCTECHAI_web_restore.zip (2.5 MB)
+Target: odoo.scholarixglobal.com
+═══════════════════════════════════════════════════════════════════════════════

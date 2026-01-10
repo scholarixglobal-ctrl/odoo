@@ -1,0 +1,147 @@
+═══════════════════════════════════════════════════════════════════════════════
+OPENAI VOICE ASSISTANT - QUICK START GUIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ INSTALLED & READY TO USE
+────────────────────────────────────────────────────────────────────────────
+
+OpenAI packages:          ✅ Installed (openai, python-dotenv)
+Voice Assistant module:   ✅ Created (at C:\odoo19\custom_addons\voice_assistant)
+API Key:                  ✅ Stored securely in Odoo
+Odoo server:              ✅ Running (http://192.168.0.157:8069)
+
+
+🚀 STEP 1: ENABLE THE MODULE IN ODOO
+────────────────────────────────────────────────────────────────────────────
+
+1. Open browser: http://192.168.0.157:8069
+2. Login with admin credentials
+3. Go to: Settings (gear icon, top-right) → Apps
+4. Search: "voice_assistant" or "OpenAI"
+5. Click the module result
+6. Click "Install" button
+7. Wait for installation (green checkmark = done)
+
+
+🎤 STEP 2: TEST THE VOICE ASSISTANT
+────────────────────────────────────────────────────────────────────────────
+
+After installation, you'll see: Voice Assistant menu
+
+Option A - Test with Existing Audio:
+  1. Click: Voice Assistant → Voice Messages
+  2. Click: Create
+  3. Fill: 
+     - Title: "Test Voice Message"
+     - Filename: "test_audio.wav"
+  4. Upload an audio file (MP3, WAV, M4A, OGG)
+     Example: Voice saying "Hi, I'm interested in your education programs"
+  5. Click: Transcribe button
+     → Should show text: "Hi, I'm interested in your education programs"
+  6. Click: Get AI Response button
+     → Should show CRM insights
+  7. Click: Create Lead button
+     → Should auto-create a new CRM lead from the voice message
+
+Option B - Test with Text Simulation:
+  1. Create Voice Message
+  2. In Transcription field, manually type: 
+     "I want to inquire about your university partner programs"
+  3. Click: Get AI Response
+     → See AI recommendations
+  4. Click: Create Lead
+     → Auto-extract: Name, email, phone
+
+
+📊 EXPECTED RESULTS
+────────────────────────────────────────────────────────────────────────────
+
+After "Transcribe" button:
+  ✅ Audio converted to text using Whisper API
+  Example: "Hello I need to enroll in a degree program"
+
+After "Get AI Response" button:
+  ✅ AI analysis displayed
+  Example: "This lead is interested in enrollment. Recommend: Send program 
+           details, schedule consultation call, add to nurture campaign"
+
+After "Create Lead" button:
+  ✅ New CRM lead created automatically
+  Example: 
+    - Lead Name: "Extracted from voice"
+    - Description: Full transcription
+    - Stage: New
+    - Team: Sales
+
+
+🔧 SETTINGS (If needed to change API Key or Model)
+────────────────────────────────────────────────────────────────────────────
+
+Settings → Voice Assistant Configuration:
+  - OpenAI API Key: [Already set]
+  - OpenAI Model: 
+    * gpt-4 (Most capable, higher cost)
+    * gpt-4-turbo (Balanced)
+    * gpt-3.5-turbo (Fast & cheap) ← Current
+
+
+⚠️ IMPORTANT
+────────────────────────────────────────────────────────────────────────────
+
+1. SECURITY: Your API key has been exposed. Please regenerate it:
+   → https://platform.openai.com/api-keys
+   → Delete current key
+   → Create new key
+   → Update in Odoo Settings → Voice Assistant
+
+2. COSTS: Each transcription and AI response costs money:
+   - Whisper: $0.006 per minute of audio
+   - GPT-3.5: $0.0005 per 1k input tokens
+   - Monitor usage: https://platform.openai.com/usage
+
+3. AUDIO FORMATS: Supported MP3, WAV, M4A, OGG, FLAC (max 25MB)
+
+4. LANGUAGE: Whisper supports 99+ languages automatically
+
+
+📞 TROUBLESHOOTING
+────────────────────────────────────────────────────────────────────────────
+
+"Voice Assistant menu not appearing?"
+  → Click: Settings → Apps (search bar)
+  → Search "voice" to find the module
+  → If not found, refresh page or check if it was installed
+
+"Transcribe button doesn't work?"
+  → Check: API key is valid
+  → Check: Audio file is in supported format
+  → Check: Browser console for error (F12)
+
+"API Key error?"
+  → Go to: Settings → Voice Assistant Configuration
+  → Paste new API key from https://platform.openai.com/api-keys
+  → Click: Save
+
+"Create Lead button fails?"
+  → Ensure CRM module is installed (should be)
+  → Check: User has permission to create leads
+  → Check: Default team/stage exist (Sales team, New stage)
+
+
+🎯 NEXT STEPS
+────────────────────────────────────────────────────────────────────────────
+
+1. Test basic transcription with a voice message
+2. Verify AI response makes sense for your use case
+3. Create a few leads from voice to test workflow
+4. Integrate into team workflows:
+   - Sales team records voice messages from customer calls
+   - AI auto-transcribes and creates leads
+   - Lead automatically assigned to appropriate rep
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Created: 2026-01-09
+Status: Ready for testing
+Location: http://192.168.0.157:8069 → Voice Assistant menu
+═══════════════════════════════════════════════════════════════════════════════

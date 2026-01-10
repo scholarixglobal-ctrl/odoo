@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:16
+    container_name: odoo19-db-1
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: SGCTECHAI
+      POSTGRES_INITDB_ARGS: "-c shared_buffers=256MB -c max_connections=200"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d SGCTECHAI"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - odoo19_default
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+
+  # Odoo Service
+  odoo:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: odoo-custom:19.0
+    container_name: odoo19-odoo-1
+    restart: unless-stopped
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - ./docker/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./data/filestore/SGCTECHAI:/var/lib/odoo/.local/share/Odoo/filestore/SGCTECHAI
+      - ./data/sessions:/var/lib/odoo/sessions
+      - ./data/backups:/var/lib/odoo/backups
+      - ./addons:/mnt/extra-addons
+      - ./custom_addons:/mnt/custom-addons
+    command: [
+      "--config=/etc/odoo/odoo.conf",
+      "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/CybroAddons,/mnt/custom-addons",
+      "-d", "SGCTECHAI",
+      "--logfile=/dev/stdout",
+      "--proxy-mode"
+    ]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bridge
+      - odoo19_default
+    # Uncomment to limit resources
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 1G
+
+  # Optional: pgAdmin for Database Management (requires Cloudflare tunnel routing)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: odoo19-pgadmin-1
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@scholarixglobal.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin_secure_password_123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - odoo19_default
+    # Uncomment to enable only with Cloudflare Tunnel
+    # profiles:
+    #   - pgadmin
+
+networks:
+  bridge:
+    driver: bridge
+    name: bridge
+  odoo19_default:
+    external: true
+    name: odoo19_default
+
+volumes:
+  db-data:
+    driver: local
+  pgadmin-data:
+    driver: local

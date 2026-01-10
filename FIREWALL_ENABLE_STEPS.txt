@@ -1,0 +1,75 @@
+═══════════════════════════════════════════════════════════════════════════════
+WINDOWS FIREWALL - MANUAL STEPS TO ENABLE PORT 8069
+═══════════════════════════════════════════════════════════════════════════════
+
+🔒 STEP-BY-STEP (Windows 11):
+─────────────────────────────────────────────────────────────────────────────
+
+Step 1: Open Windows Defender Firewall
+  → Press: Windows Key + R
+  → Type: wf.msc
+  → Press: Enter
+  → Click: Yes (if prompted by User Account Control)
+
+Step 2: Open Inbound Rules
+  → In left sidebar: Click "Inbound Rules"
+
+Step 3: Create New Rule
+  → In right sidebar: Click "New Rule..."
+
+Step 4: Configure Rule
+  
+  STEP 1 - Rule Type:
+    ○ Select: "Port"
+    ○ Click: Next
+
+  STEP 2 - Protocol and Ports:
+    ○ Protocol: TCP
+    ○ Specific local ports: 8069
+    ○ Click: Next
+
+  STEP 3 - Action:
+    ○ Select: "Allow the connection"
+    ○ Click: Next
+
+  STEP 4 - Profile:
+    ☑ Domain
+    ☑ Private
+    ☑ Public
+    ○ Click: Next
+
+  STEP 5 - Name and Description:
+    Name: Odoo 8069 Inbound
+    Description: Allow local Odoo access on port 8069
+    ○ Click: Finish
+
+Step 5: Verify Rule Created
+  → Rule "Odoo 8069 Inbound" should appear in Inbound Rules list
+  → Status: Enabled (green checkmark)
+
+
+⚡ QUICK VERIFICATION:
+─────────────────────────────────────────────────────────────────────────────
+
+From another device on same Wi-Fi:
+  1. Open browser
+  2. Visit: http://192.168.0.157:8069
+  3. Should see Odoo login page
+
+If still can't connect:
+  → Firewall might have other blocks
+  → Try: netsh advfirewall reset (requires admin, caution!)
+  → Or disable firewall temporarily for testing
+
+
+🗑️ TO REMOVE RULE LATER:
+─────────────────────────────────────────────────────────────────────────────
+
+1. Open: wf.msc
+2. Select: "Inbound Rules"
+3. Find: "Odoo 8069 Inbound"
+4. Right-click → Delete
+5. Confirm: Yes
+
+
+═══════════════════════════════════════════════════════════════════════════════

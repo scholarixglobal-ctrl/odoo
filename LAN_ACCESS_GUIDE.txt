@@ -1,0 +1,150 @@
+═══════════════════════════════════════════════════════════════════════════════
+ODOO 19 - LOCAL LAN ACCESS GUIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+📍 SHARE THIS WITH YOUR TEAM:
+─────────────────────────────────────────────────────────────────────────────
+
+Access URL (Local Network):
+  👉 http://192.168.0.157:8069
+
+Credentials:
+  Username: admin
+  Password: [Your Odoo login password]
+
+Device Name: DESKTOP-0862M4T (Windows 11)
+Network: BBC 5G WiFi (192.168.0.x)
+Status: Running Docker containers (Odoo + PostgreSQL)
+
+
+✅ QUICK CHECKLIST FOR TEAM MEMBERS:
+────────────────────────────────────────────────────────────────────────────
+
+1. [ ] Both on same Wi-Fi network (BBC 5G)
+2. [ ] Open browser (Chrome, Firefox, Safari, Edge)
+3. [ ] Visit: http://192.168.0.157:8069
+4. [ ] Login with Odoo credentials
+5. [ ] Navigate to CRM → Leads (should see 8,912 leads)
+
+
+⚠️ IMPORTANT:
+──────────────────────────────────────────────────────────────────────────────
+
+• Works ONLY on local Wi-Fi network (not accessible from outside)
+• Odoo Docker container must be running (odoo19-odoo-1)
+• Database must be running (odoo19-db-1)
+• If connection fails:
+  - Check Wi-Fi connection to BBC 5G
+  - Wait 30 seconds and refresh page
+  - Contact: Provide this guide
+
+
+🔧 SYSTEM INFORMATION:
+──────────────────────────────────────────────────────────────────────────────
+
+Host Machine:
+  - Name: DESKTOP-0862M4T
+  - OS: Windows 11
+  - LAN IP: 192.168.0.157
+  - Subnet: 255.255.255.0
+  - Gateway: 192.168.0.1
+
+Network Interface:
+  - Type: Wireless LAN (Wi-Fi)
+  - SSID: BBC 5G
+  - IPv6: fe80::2524:b968:2fff:70dd%17
+
+Docker Services:
+  - Odoo 19.0 (Container: odoo19-odoo-1)
+    Port: 8069
+    Status: Running
+  
+  - PostgreSQL 16.11 (Container: odoo19-db-1)
+    Port: 5432 (internal)
+    Status: Running
+
+Database:
+  - Name: SGCTECHAI
+  - Records: 8,912 CRM leads
+  - Data Status: Synced from local backup
+
+
+🌍 OPTIONAL: EXTERNAL ACCESS (From Internet)
+──────────────────────────────────────────────────────────────────────────────
+
+If you want to access Odoo from outside your LAN, there are two options:
+
+OPTION 1: Port Forwarding (Requires Router Access)
+─────────────────────────────────────────────────
+
+1. Open router admin panel (usually 192.168.0.1)
+2. Log in with router credentials
+3. Find "Port Forwarding" settings
+4. Create rule:
+   - External Port: 8069 (or any unused port like 9000)
+   - Internal IP: 192.168.0.157
+   - Internal Port: 8069
+   - Protocol: TCP
+5. Save and restart router
+6. Note your PUBLIC IP from https://whatismyipaddress.com
+7. Access from anywhere: http://<PUBLIC_IP>:8069
+
+RISKS:
+  ⚠️ Exposes Odoo to internet
+  ⚠️ Requires strong password
+  ⚠️ Firewall must allow inbound
+
+OPTION 2: Cloudflare Tunnel (More Secure)
+──────────────────────────────────────────
+
+Requires setup with Cloudflare account (recommended for production).
+Contact: [Admin/DevOps] for deployment.
+
+
+📋 TROUBLESHOOTING:
+──────────────────────────────────────────────────────────────────────────────
+
+"Connection refused" or "No response":
+  → Check if on same Wi-Fi: ipconfig (should see 192.168.0.x)
+  → Restart browser
+  → Wait 60 seconds for Odoo to initialize
+  → Restart Docker: docker compose restart
+
+"Cannot find server":
+  → IP might have changed (DHCP lease expired)
+  → Run: ipconfig
+  → Look for new IPv4 address in Wi-Fi adapter section
+  → Update bookmarks
+
+"Login failed":
+  → Confirm credentials are correct
+  → Check Caps Lock
+  → Try admin account first
+
+Still having issues?
+  → Check Docker status: docker ps
+  → View logs: docker logs odoo19-odoo-1 --tail 50
+  → Restart services: docker compose restart
+
+
+📞 SUPPORT:
+──────────────────────────────────────────────────────────────────────────────
+
+For issues, contact:
+  Name: [Your Name]
+  Email: [Your Email]
+  Phone: [Your Phone]
+
+Attach:
+  1. Browser error screenshot
+  2. Output from: ipconfig
+  3. Output from: docker ps
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Document Version: 1.0
+Created: 2026-01-09
+Last Updated: 2026-01-09
+Local IP: 192.168.0.157
+Status: ✅ Odoo Running (Docker)
+═══════════════════════════════════════════════════════════════════════════════

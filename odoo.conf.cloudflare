@@ -1,0 +1,81 @@
+[options]
+# ============================================================
+# Database Configuration
+# ============================================================
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = odoo
+db_name = SGCTECHAI
+
+# ============================================================
+# Web Interface Configuration
+# ============================================================
+http_port = 8069
+http_interface = 0.0.0.0
+
+# ============================================================
+# CRITICAL: Cloudflare Tunnel Configuration
+# ============================================================
+# Enable proxy mode for Cloudflare Tunnel
+proxy_mode = True
+
+# Set your actual domain
+web.base.url = https://odoo.scholarixglobal.com
+
+# ============================================================
+# Addons Path
+# ============================================================
+addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons/CybroAddons,/mnt/custom-addons
+
+# ============================================================
+# Logging Configuration
+# ============================================================
+logfile = /dev/stdout
+log_level = info
+
+# ============================================================
+# Security Settings
+# ============================================================
+# Master admin password (CHANGE THIS!)
+admin_passwd = admin123
+
+# Session configuration
+session_store = db
+session_timeout = 8640  # 24 hours in minutes
+
+# ============================================================
+# Performance Optimization
+# ============================================================
+workers = 4
+limit_memory_hard = 2684354560  # 2.5 GB
+limit_memory_soft = 2147483648  # 2 GB
+limit_request = 8192
+limit_time_cpu = 60
+limit_time_real = 120
+
+# ============================================================
+# File Upload Configuration
+# ============================================================
+max_request_size = 104857600  # 100 MB
+
+# ============================================================
+# Development/Debug (Set to False in Production)
+# ============================================================
+dev_mode = False
+auto_reload = False
+
+# ============================================================
+# SMTP Configuration (Optional)
+# ============================================================
+# smtp_server = smtp.gmail.com
+# smtp_port = 587
+# smtp_ssl = True
+# smtp_user = your-email@gmail.com
+# smtp_password = your-password
+
+# ============================================================
+# Additional Settings
+# ============================================================
+without_demo = False
+data_dir = /var/lib/odoo/.local/share/Odoo

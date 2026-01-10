@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Voice Message List View -->
+        <record id="view_voice_message_list" model="ir.ui.view">
+            <field name="name">voice.message.list</field>
+            <field name="model">voice.message</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="transcription"/>
+                    <field name="user_id"/>
+                    <field name="create_date"/>
+                    <field name="lead_id"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Voice Message Form View -->
+        <record id="view_voice_message_form" model="ir.ui.view">
+            <field name="name">voice.message.form</field>
+            <field name="model">voice.message</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="button_transcribe" type="object" class="oe_stat_button" icon="fa-microphone">
+                                <span>Transcribe</span>
+                            </button>
+                            <button name="button_get_response" type="object" class="oe_stat_button" icon="fa-brain">
+                                <span>Get AI Response</span>
+                            </button>
+                            <button name="button_create_lead_from_voice" type="object" class="oe_stat_button" icon="fa-plus">
+                                <span>Create Lead</span>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Message Title"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="duration"/>
+                                <field name="filename"/>
+                            </group>
+                            <group>
+                                <field name="lead_id"/>
+                                <field name="create_date"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Audio" name="audio">
+                                <group>
+                                    <field name="audio_file" widget="binary"/>
+                                </group>
+                            </page>
+                            <page string="Transcription" name="transcription">
+                                <group>
+                                    <field name="transcription" nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="AI Response" name="response">
+                                <group>
+                                    <field name="ai_response" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Voice Message Action -->
+        <record id="action_voice_message" model="ir.actions.act_window">
+            <field name="name">Voice Messages</field>
+            <field name="res_model">voice.message</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first voice message
+                </p><p>
+                    Upload audio files, transcribe them with Whisper,
+                    and get AI insights from GPT for your CRM.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_voice_assistant" name="Voice Assistant" sequence="50" web_icon="voice_assistant,static/description/icon.png"/>
+        <menuitem id="menu_voice_messages" name="Voice Messages" parent="menu_voice_assistant" action="action_voice_message" sequence="10"/>
+    </data>
+</odoo>
