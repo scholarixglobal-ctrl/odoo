@@ -1,0 +1,64 @@
+// Scholarix Design System
+$primary: #1E3A8A; // Deep Blue
+$cta: #10B981; // Vibrant Green
+$accent: #F59E0B; // Gold
+$text: #111827; // Slate-900
+
+:root {
+  --sx-color-primary: #{$primary};
+  --sx-color-cta: #{$cta};
+  --sx-color-accent: #{$accent};
+  --sx-color-text: #{$text};
+}
+
+// Global typography
+body, .o_web_client {
+  font-family: "Inter", "Open Sans", Arial, sans-serif;
+  color: var(--sx-color-text);
+}
+
+// Navbar and buttons
+.o_main_navbar, .o_control_panel {
+  background-color: var(--sx-color-primary);
+}
+
+.btn-primary, .o_button_primary {
+  background-color: var(--sx-color-cta);
+  border-color: var(--sx-color-cta);
+}
+
+.btn-secondary, .o_button_secondary {
+  color: var(--sx-color-primary);
+}
+
+// Login page enhancements
+body.login {
+  background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+}
+
+.o_login .oe_login_form {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-radius: 12px;
+  border-top: 4px solid var(--sx-color-accent);
+}
+
+.o_login .btn-primary {
+  background-color: var(--sx-color-cta);
+}
+
+// Footer responsiveness (frontend pages)
+footer {
+  &.sx-footer {
+    padding: 16px;
+    background: #0F172A;
+    color: #fff;
+    a { color: #cbd5e1; }
+    .sx-logo { max-height: 60px; }
+    @media (max-width: 768px) { .sx-logo { max-height: 40px; } }
+  }
+}
+
+// Forms: increase readability
+input, select, textarea {
+  font-size: 16px;
+}

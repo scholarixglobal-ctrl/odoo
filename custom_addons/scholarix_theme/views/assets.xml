@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Frontend assets -->
+    <template id="assets_frontend" name="Scholarix Frontend Assets" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/scholarix_theme/static/src/scss/scholarix.scss"/>
+            <script type="module" src="/scholarix_theme/static/src/js/scholarix.js"/>
+        </xpath>
+    </template>
+
+    <!-- Backend assets -->
+    <template id="assets_backend" name="Scholarix Backend Assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss" href="/scholarix_theme/static/src/scss/scholarix.scss"/>
+        </xpath>
+    </template>
+</odoo>
